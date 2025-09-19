@@ -1,11 +1,11 @@
 using Api_Orbis_Project.Data;
 using Api_Orbis_Project.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer; // 👈 IMPORTANTE
+using Microsoft.AspNetCore.Authentication.JwtBearer; // JWT
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using api.Custome; 
+using api.Custome;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // -------------------------------------------
 // JWT configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // 👈 ya funciona
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -31,12 +31,40 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // �
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(jwtSettings["Key"]))
         };
+
+        // Optional: log token errors
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("JWT Authentication failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnMessageReceived = context =>
+            {
+                Console.WriteLine("JWT token received: " + context.Token);
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // -------------------------------------------
 // Custom services
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<Utils>(); 
+builder.Services.AddScoped<Utils>();
+
+// -------------------------------------------
+// CORS configuration for React frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 // -------------------------------------------
 // Controllers and endpoints
@@ -85,7 +113,9 @@ builder.Services.AddSwaggerGen(c =>
 // App build and configuration
 var app = builder.Build();
 
-// Enable Swagger only in development environment
+Console.WriteLine("Starting Orbis API...");
+
+// Enable Swagger only in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -93,6 +123,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication(); // JWT validation
 app.UseAuthorization();
