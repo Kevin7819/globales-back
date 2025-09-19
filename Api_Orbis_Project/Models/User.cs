@@ -23,6 +23,10 @@ namespace Api_Orbis_Project.Models
         public ICollection<Alert> Alerts { get; set; }
         public ICollection<ChatHistory> ChatHistories { get; set; }
 
+        //public static implicit operator User(User v)
+        //{
+         //   throw new NotImplementedException();
+       // }
 
         public enum Role
         {

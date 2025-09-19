@@ -416,3 +416,52 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+# Binary and compiled files
+bin/
+obj/
+target/
+build/
+dist/
+
+# Dependencies
+node_modules/
+api/node_modules/
+.pnp.*
+.pnpm/
+
+# Environment variables and sensitive data
+api/firebase-adminsdk.json
+
+
+# System and IDE configuration files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.suo
+*.user
+*.vs/
+*.sln.dotSettings
+
+# Logs and temporary files
+logs/
+*.log
+npm-debug.log*
+
+# Database configuration (DON'T version credentials)
+api/appsettings.json
+api/appsettings.Development.json
+
+# Auto-generated Entity Framework migration files
+Api_Orbis_Project/Migrations/
+
+# Publish output
+wwwroot/
+
+# Project properties and build configurations
+**/Properties/
+**/Properties/*

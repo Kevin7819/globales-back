@@ -1,43 +1,91 @@
 using Api_Orbis_Project.Data;
 using Api_Orbis_Project.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer; // 👈 IMPORTANTE
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using api.Custome; 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-
-// Register the DbContext
+// -------------------------------------------
+// Database configuration (SQL Server)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// -------------------------------------------
+// JWT configuration
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // 👈 ya funciona
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+        };
+    });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Register the UserService
+// -------------------------------------------
+// Custom services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<Utils>(); 
 
-// Add Swagger generation ***
+// -------------------------------------------
+// Controllers and endpoints
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// -------------------------------------------
+// Swagger configuration with JWT support
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Orbis API",
         Version = "v1",
         Description = "API for Orbis Project"
     });
+
+    // Add JWT auth to Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Enter JWT like: Bearer {token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
 });
 
-
-// Add Endpoints API Explorer ***
-builder.Services.AddEndpointsApiExplorer();
-
-
+// -------------------------------------------
+// App build and configuration
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Enable Swagger only in development environment
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -46,6 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); // JWT validation
 app.UseAuthorization();
 
 app.MapControllers();

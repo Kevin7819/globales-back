@@ -7,6 +7,7 @@ namespace Api_Orbis_Project.Dtos
     {
         public int UserId { get; set; }
         public string? Name { get; set; }
+        public string Password { get; set; } = null!;
         public string? Email { get; set; } // optionally remove for privacy
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
