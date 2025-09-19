@@ -13,7 +13,7 @@ namespace Api_Orbis_Project.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public string Category { get; set; }
-        public string Value { get; set; }
+        public string? Category { get; set; }
+        public string? Value { get; set; }
     }
 }

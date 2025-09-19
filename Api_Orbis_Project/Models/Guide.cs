@@ -9,9 +9,9 @@ namespace Api_Orbis_Project.Models
         [Key]
         public int GuideId { get; set; }
 
-        public string Country { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public string? Country { get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
 
         public GuideCategory Category { get; set; }
 
