@@ -40,20 +40,6 @@ namespace Api_Orbis_Project.Data
                 .WithOne(c => c.User)
                 .HasForeignKey(c => c.UserId);
 
-            // Many-to-many: Trip <-> Guide (EF Core will create join table "TripGuide")
-            modelBuilder.Entity<Trip>()
-                .HasMany(t => t.Guides)
-                .WithMany(g => g.Trips)
-                .UsingEntity<Dictionary<string, object>>(
-                    "TripGuide",
-                    j => j.HasOne<Guide>().WithMany().HasForeignKey("GuideId"),
-                    j => j.HasOne<Trip>().WithMany().HasForeignKey("TripId"),
-                    j =>
-                    {
-                        j.HasKey("TripId", "GuideId");
-                        j.ToTable("TripGuide");
-                    });
-
             // Store enums as strings for readability
             modelBuilder.Entity<User>().Property(u => u.UserRole).HasConversion<string>();
             modelBuilder.Entity<Trip>().Property(t => t.Type).HasConversion<string>();

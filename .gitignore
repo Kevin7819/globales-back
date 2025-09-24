@@ -453,8 +453,8 @@ logs/
 npm-debug.log*
 
 # Database configuration (DON'T version credentials)
-api/appsettings.json
-api/appsettings.Development.json
+Api_Orbis_Project/appsettings.json
+Api_Orbis_Project/appsettings.Development.json
 
 # Auto-generated Entity Framework migration files
 Api_Orbis_Project/Migrations/

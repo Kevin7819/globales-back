@@ -15,7 +15,6 @@ namespace Api_Orbis_Project.Dtos
         [Required, MinLength(6)]
         public string Password { get; set; } = null!;
 
-        public DateTime? Birthday { get; set; }
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
     }

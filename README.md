@@ -36,13 +36,14 @@ Create a file `appsettings.Development.json` inside `api` with the following con
 
 #### 2️⃣ Create `appsettings.json` and configure SQL Server credentials
 
-Inside `api`, create a file named `appsettings.json` and add your credentials:
+Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your credentials:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=\"TUSERVIDOR\";Database=dbyetify;Integrated Security=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=DELLKEV\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
+
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -50,26 +51,17 @@ Inside `api`, create a file named `appsettings.json` and add your credentials:
     }
   },
   "Jwt": {
-    "Key": "13E13E1B-4222-43E5-8AA5-B8E5328D9E84",
-    "Issuer": "YetifyAPI",
-    "Audience": "YetifyUsers",
-    "ExpireMinutes": 60 
+    "Key": "378bb149-828a-42ea-88cf-5453a3e672b4",
+    "Issuer": "OrbisAPI",
+    "Audience": "OrbisUsers",
+    "ExpireMinutes": 60
   },
-  "AllowedHosts": "*",
-  "EmailConfiguration": {
-    "From": "kvenegasbermudez@gmail.com",
-    "DisplayName": "Yetify Support",
-    "SmtpServer": "smtp.gmail.com",
-    "Port": 587,
-    "Username": "kvenegasbermudez@gmail.com",
-    "Password": "gsas gryy bqng evwi",
-    "UseSsl": true,  
-    "Timeout": 30000  
-  }
+  "AllowedHosts": "*"
 }
+
 ```
 
-#### 2️⃣ Create carpeta Properties en api y dentro de la carpeta un archivo`launchSettings.json` con esto
+#### 2️⃣ Create carpeta Properties en Api_Orbis_Project y dentro de la carpeta un archivo`launchSettings.json` con esto
 
 ```json
 {
@@ -78,8 +70,8 @@ Inside `api`, create a file named `appsettings.json` and add your credentials:
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:10059",
-      "sslPort": 44312
+      "applicationUrl": "http://localhost:46202",
+      "sslPort": 44384
     }
   },
   "profiles": {
@@ -88,7 +80,7 @@ Inside `api`, create a file named `appsettings.json` and add your credentials:
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://0.0.0.0:5003",
+      "applicationUrl": "http://localhost:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -98,7 +90,7 @@ Inside `api`, create a file named `appsettings.json` and add your credentials:
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7182;http://localhost:5003",
+      "applicationUrl": "https://localhost:7273;http://localhost:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -113,6 +105,7 @@ Inside `api`, create a file named `appsettings.json` and add your credentials:
     }
   }
 }
+
 ```
 
 ## How to run the API
