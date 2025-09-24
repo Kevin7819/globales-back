@@ -1,53 +1,29 @@
-# ✈️ Se tiene que pensar – Asistente Global para Viajeros  
+# Orbis
 
-## 📍 Universidad Nacional  
-**Sección Regional Huetar Norte y Caribe – Campus Sarapiquí**  
 
-📚 **Curso:** Aplicaciones Informáticas Globales (EIF-409)  
-👩‍🏫 **Docente:** Mag. Rachel Bolívar Morales  
-👨‍🎓 **Estudiantes:**  
-- Jordi Francisco Rivas Beita  
-- Kevin Venegas Bermúdez  
-- Edisson Bolívar Cruz  
 
-📅 **I Ciclo – 22 de agosto, 2025**  
+## Installation and Configuration
 
----
+### Requirements
 
-## 🌐 Descripción del Proyecto
-**“Se tiene que pensar”** es una aplicación **web + móvil** que funciona como **asistente global para viajeros**.  
-Diseñada para integrarse con aerolíneas, la plataforma brinda a los pasajeros información **sanitaria, cultural y logística** sobre su destino **antes y durante el viaje**, incluyendo:  
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) or higher  
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)  
+- Visual Studio Code or Visual Studio  
 
-- Requisitos de entrada al país (visas, documentos).  
-- Vacunas y alertas sanitarias.  
-- Costumbres y expresiones culturales a tener en cuenta.  
-- Información logística en un **mapa interactivo**.  
-- **Chatbot con IA** para responder dudas en tiempo real.  
+### Clone the repository
 
----
+```sh
+git clone 
+cd 
+```
 
-## ⚙️ Instalación y Configuración
+### Configure the database
 
-### 🔑 Requisitos
-Antes de iniciar, asegurate de tener instalado:
+#### 1️⃣ Create `appsettings.Development.json`
 
-- [✅ .NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)  
-- [✅ SQL Server](https://www.microsoft.com/es-es/sql-server/sql-server-downloads)  
-- [✅ Visual Studio Code](https://code.visualstudio.com/) o [Visual Studio](https://visualstudio.microsoft.com/)  
-- [✅ Git](https://git-scm.com/)  
+Create a file `appsettings.Development.json` inside `api` with the following content:
 
----
-
-### 📥 Clonar el repositorio
-```bash
-git clone https://github.com/Kevin7819/globales-back.git
-cd globales-back/api
-⚙️ Configurar la base de datos
-1️⃣ Crear appsettings.Development.json
-En la carpeta api, crear el archivo appsettings.Development.json con este contenido:
-
-json
-
+```json
 {
   "Logging": {
     "LogLevel": {
@@ -56,46 +32,106 @@ json
     }
   }
 }
-2️⃣ Crear appsettings.json y añadir credenciales de SQL Server
-En la misma carpeta, crear appsettings.json con tus credenciales de SQL Server:
+```
 
-json
+#### 2️⃣ Create `appsettings.json` and configure SQL Server credentials
 
+Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your credentials:
+
+```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=TUSERVIDOR;Database=dborbis;Integrated Security=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=DELLKEV\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
+
   "Logging": {
     "LogLevel": {
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning"
     }
   },
+  "Jwt": {
+    "Key": "378bb149-828a-42ea-88cf-5453a3e672b4",
+    "Issuer": "OrbisAPI",
+    "Audience": "OrbisUsers",
+    "ExpireMinutes": 60
+  },
   "AllowedHosts": "*"
 }
-⚠️ Importante:
 
-Cambiá TUSERVIDOR por el nombre de tu servidor SQL.
+```
 
-El nombre de la base de datos por defecto es dborbis.
+#### 2️⃣ Create carpeta Properties en Api_Orbis_Project y dentro de la carpeta un archivo`launchSettings.json` con esto
 
-🚀 Cómo ejecutar la API
-1️⃣ Instalar dependencias
-bash
+```json
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:46202",
+      "sslPort": 44384
+    }
+  },
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5089",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7273;http://localhost:5089",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
 
+```
+
+## How to run the API
+
+### 1️⃣ Install dependencies
+
+```sh
 dotnet restore
-2️⃣ Crear la base de datos con Entity Framework
-Agregar la primera migración:
+```
 
-bash
+### 2️⃣ Create the database
 
+### To start migrations
+
+```sh
 dotnet ef migrations add Init
-Aplicar la migración a la base de datos:
+```
 
-bash
+### To update the database
 
+```sh
 dotnet ef database update
-3️⃣ Ejecutar la API
-bash
+```
 
+### 3️⃣ Run the API
+
+```sh
 dotnet run
+```
