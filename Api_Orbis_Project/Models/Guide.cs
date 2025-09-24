@@ -15,8 +15,6 @@ namespace Api_Orbis_Project.Models
 
         public GuideCategory Category { get; set; }
 
-        public ICollection<Trip> Trips { get; set; }
-
         public enum GuideCategory
         {
             Health,

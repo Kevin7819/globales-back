@@ -1,46 +1,47 @@
-FLUJO PARA [NOMBRE DE LA TAREA]
-1. 🚀 CREAR RAMA
-git checkout -b [tipo/nombre-descriptivo]
+## 🚀 Description
+*Describa brevemente los cambios y el propósito de esta solicitud de incorporación de cambios...*
 
-2. 🛠️ IMPLEMENTAR CAMBIOS Y COMMIT
-git add .
-git commit -m "[DD/MM/AAAA HH:MM] Mensaje descriptivo"
+Ejemplo: Se agregó una nueva función, se corrigió un error, se refactorizó el código o se mejoró la documentación.
 
-3. 📤 SUBIR CAMBIOS
-git push origin [nombre-rama]
+---
 
-4. 📝 PLANTILLA PULL REQUEST
+## 📌 Related Issue
+*Cierra #ISSUE_ID (si corresponde)*
 
-Título: [Tipo] / [Descripción breve]
+---
 
-🚀 Descripción
-Describe brevemente los cambios y el propósito de este PR...
+## 🛠️ Changes Made
+- [ ] New feature
+- [ ] Bug Fix
+- [ ] Refactor
+- [ ] Documentation
+- [ ] Test
+- [ ] Other: *Specify*  
 
-📌 Tarea relacionada
-Closes #ID_DEL_ISSUE (si aplica)
+---
 
-🛠️ Cambios realizados:
+## 🔎 How to Test
+1. *Describe los pasos para probar los cambios...* 
+2. *Incluye cualquier configuración o dependencia especial si es necesario...*
 
-Nueva funcionalidad
+---
 
-Corrección de errores
+## ✅ Acceptance Criteria
+- [ ] Reviewed by at least 1 team member
+- [ ] Automatic tests passed
+- [ ] Meets the requirements described in the issue
+- [ ] No new errors or warnings  
 
-Refactorización de código
+---
 
-✅ Criterios de aceptación:
-✓ Describir criterio 1
-✓ Describir criterio 2
-✓ Describir criterio 3
+## Test Cases (if applicable)
+**Name:** *Nombre del caso de prueba*  
+**Steps:**  
+- Step 1  
+- Step 2  
+**Expected Result:** *Describir el resultado esperado*  
 
-🔎 Casos de prueba:
+---
 
-Nombre del caso de prueba:
-Pasos:
-
-Paso 1
-
-Paso 2
-Resultado esperado:
-
-📸 Capturas de pantalla (si aplica)
-Agrega aquí las capturas de pantalla relevantes...
+## 📸 Screenshots (if applicable)
+*Agregue capturas de pantalla, GIF o diagramas relevantes si es necesario.*
