@@ -11,7 +11,7 @@ namespace Api_Orbis_Project.Dtos
         public string? Email { get; set; } // optionally remove for privacy
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
-        public int? YearOfBirth { get; set; }
+        public DateOnly? BirthDate { get; set; }
         public string? Role { get; set; } // for response, easier as string
     }
 }
