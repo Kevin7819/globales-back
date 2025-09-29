@@ -14,6 +14,7 @@ namespace Api_Orbis_Project.Models
         public string? Password { get; set; }
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
+        public int? YearOfBirth { get; set; }
 
         public Role UserRole { get; set; }
 

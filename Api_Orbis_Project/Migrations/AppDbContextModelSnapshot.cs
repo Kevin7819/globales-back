@@ -143,10 +143,14 @@ namespace Api_Orbis_Project.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Destination")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FlightNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");
@@ -192,24 +196,12 @@ namespace Api_Orbis_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("YearOfBirth")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("TripGuide", b =>
-                {
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GuideId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TripId", "GuideId");
-
-                    b.HasIndex("GuideId");
-
-                    b.ToTable("TripGuide", (string)null);
                 });
 
             modelBuilder.Entity("Api_Orbis_Project.Models.Alert", b =>
@@ -254,21 +246,6 @@ namespace Api_Orbis_Project.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TripGuide", b =>
-                {
-                    b.HasOne("Api_Orbis_Project.Models.Guide", null)
-                        .WithMany()
-                        .HasForeignKey("GuideId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Api_Orbis_Project.Models.Trip", null)
-                        .WithMany()
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Api_Orbis_Project.Models.User", b =>

@@ -1,4 +1,3 @@
-// Api_Orbis_Project/Dtos/LoginResponseDto.cs
 namespace Api_Orbis_Project.Dtos
 {
     public class LoginResponseDto
