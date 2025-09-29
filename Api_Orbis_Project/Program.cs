@@ -108,7 +108,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
+// HttpClient for LocationController
+builder.Services.AddHttpClient();
 // -------------------------------------------
 // App build and configuration
 var app = builder.Build();
