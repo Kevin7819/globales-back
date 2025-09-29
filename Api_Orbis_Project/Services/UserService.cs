@@ -29,6 +29,7 @@ namespace Api_Orbis_Project.Services
                     Email = u.Email,
                     CountryOfOrigin = u.CountryOfOrigin,
                     PreferredLanguage = u.PreferredLanguage,
+                    BirthDate = u.BirthDate,
                     Role = u.UserRole.ToString()
                 })
                 .ToListAsync();
@@ -46,6 +47,7 @@ namespace Api_Orbis_Project.Services
                     Email = u.Email,
                     CountryOfOrigin = u.CountryOfOrigin,
                     PreferredLanguage = u.PreferredLanguage,
+                    BirthDate = u.BirthDate,
                     Role = u.UserRole.ToString()
                 })
                 .FirstOrDefaultAsync();
@@ -61,7 +63,7 @@ namespace Api_Orbis_Project.Services
                 Password = dto.Password, // encriptar
                 CountryOfOrigin = dto.CountryOfOrigin,
                 PreferredLanguage = dto.PreferredLanguage,
-                YearOfBirth = dto.YearOfBirth,
+                BirthDate = dto.BirthDate,
                 UserRole = User.Role.Passenger
             };
 
@@ -75,6 +77,7 @@ namespace Api_Orbis_Project.Services
                 Email = user.Email,
                 CountryOfOrigin = user.CountryOfOrigin,
                 PreferredLanguage = user.PreferredLanguage,
+                BirthDate = user.BirthDate,
                 Role = user.UserRole.ToString()
             };
         }
@@ -89,7 +92,7 @@ namespace Api_Orbis_Project.Services
             user.Email = dto.Email;
             user.CountryOfOrigin = dto.CountryOfOrigin;
             user.PreferredLanguage = dto.PreferredLanguage;
-            user.YearOfBirth = dto.YearOfBirth;
+            user.BirthDate = dto.BirthDate;
 
             if (Enum.TryParse<User.Role>(dto.Role, out var parsedRole))
             {

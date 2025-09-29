@@ -9,7 +9,7 @@ namespace Api_Orbis_Project.Dtos
         public string? Password { get; set; }
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
-        public int YearOfBirth { get; set; }
+        public DateOnly BirthDate { get; set; }
         public User.Role UserRole { get; set; } // uses enum nested in User model
     }
 }

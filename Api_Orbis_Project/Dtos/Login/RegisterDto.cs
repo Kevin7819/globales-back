@@ -17,7 +17,7 @@ namespace Api_Orbis_Project.Dtos
         public string? CountryOfOrigin { get; set; }
         public string? PreferredLanguage { get; set; }
 
-        [Required, MinLength(4), MaxLength(4)]
-        public int YearOfBirth { get; set; }
+        [Required]
+        public DateOnly BirthDate { get; set; }
     }
 }
