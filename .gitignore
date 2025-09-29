@@ -465,3 +465,4 @@ wwwroot/
 # Project properties and build configurations
 **/Properties/
 **/Properties/*
+Api_Orbis_Project/appsettings.json

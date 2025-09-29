@@ -3,6 +3,6 @@ namespace api.Constants
 
         public static class UserConstants 
         {
-            public const string UsernameExists = "El nombre de usuario ya existe";
+            public const string UsernameExists = "The username already exists.";
         }
 }

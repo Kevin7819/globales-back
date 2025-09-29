@@ -38,14 +38,13 @@ namespace Api_Orbis_Project.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = newUser.UserId }, newUser);
         }
 
-        /*
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
         {
             var result = await _userService.UpdateUserAsync(id, dto);
             if (!result) return NotFound();
             return NoContent();
-        }*/
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
