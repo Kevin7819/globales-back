@@ -61,6 +61,7 @@ namespace Api_Orbis_Project.Services
                 Password = dto.Password, // encriptar
                 CountryOfOrigin = dto.CountryOfOrigin,
                 PreferredLanguage = dto.PreferredLanguage,
+                YearOfBirth = dto.YearOfBirth,
                 UserRole = User.Role.Passenger
             };
 
@@ -79,7 +80,7 @@ namespace Api_Orbis_Project.Services
         }
 
         // Actualizar un usuario
-        /*public async Task<bool> UpdateUserAsync(int id, UpdateUserDto dto)
+        public async Task<bool> UpdateUserAsync(int id, UpdateUserDto dto)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return false;
@@ -88,12 +89,17 @@ namespace Api_Orbis_Project.Services
             user.Email = dto.Email;
             user.CountryOfOrigin = dto.CountryOfOrigin;
             user.PreferredLanguage = dto.PreferredLanguage;
-            user.UserRole = (User.Role)Enum.Parse(typeof(User.Role), dto.Role);
+            user.YearOfBirth = dto.YearOfBirth;
+
+            if (Enum.TryParse<User.Role>(dto.Role, out var parsedRole))
+            {
+                user.UserRole = parsedRole;
+            }
 
             await _context.SaveChangesAsync();
             return true;
         }
-        */
+
         // Eliminar un usuario
         public async Task<bool> DeleteUserAsync(int id)
         {
