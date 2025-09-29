@@ -79,6 +79,7 @@ namespace api.Controllers
                     Password = _utils.EncryptSHA256(dto.Password),
                     CountryOfOrigin = dto.CountryOfOrigin,
                     PreferredLanguage = dto.PreferredLanguage,
+                    BirthDate = dto.BirthDate,
                     UserRole = Api_Orbis_Project.Models.User.Role.Passenger
                 };
 

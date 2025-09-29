@@ -177,6 +177,9 @@ namespace Api_Orbis_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<DateOnly?>("BirthDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("CountryOfOrigin")
                         .HasColumnType("nvarchar(max)");
 
@@ -195,9 +198,6 @@ namespace Api_Orbis_Project.Migrations
                     b.Property<string>("UserRole")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("YearOfBirth")
-                        .HasColumnType("int");
 
                     b.HasKey("UserId");
 
