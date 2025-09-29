@@ -36,7 +36,7 @@ namespace api.Services
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(60), // Token expiration time
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
                 signingCredentials: credentials
             );
 

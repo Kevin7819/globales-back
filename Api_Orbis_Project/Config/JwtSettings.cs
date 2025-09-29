@@ -6,5 +6,6 @@ namespace api.Config
         public string Key { get; set; }       // Secret key used to sign tokens
         public string Issuer { get; set; }    // Token issuer (API)
         public string Audience { get; set; }  // Intended audience (clients)
+        public int ExpireMinutes { get; set; } 
     }
 }
