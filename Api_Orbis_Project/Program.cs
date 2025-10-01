@@ -59,7 +59,6 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        // 🔥 Permití ambos: React y Expo web
         policy.WithOrigins(
                 "http://localhost:3000",  // React / Next.js
                 "http://localhost:8081"   // Expo web
@@ -69,7 +68,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 
-    // 👉 O si querés abrirlo todo en dev:
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
