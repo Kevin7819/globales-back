@@ -1,5 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Api_Orbis_Project.Models
@@ -23,5 +21,8 @@ namespace Api_Orbis_Project.Models
 
         [JsonPropertyName("languages")]
         public Dictionary<string, string>? Languages { get; set; }
+        
+        [JsonPropertyName("capital")]
+        public List<string>? Capital { get; set; }
     }
 }

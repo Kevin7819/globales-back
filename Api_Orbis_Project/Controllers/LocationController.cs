@@ -92,7 +92,7 @@ namespace Api_Orbis_Project.Controllers
         [HttpGet("geojson/{countryCode}")]
         public async Task<IActionResult> GetCountryGeoJson(string countryCode)
         {
-            // Example: https://raw.githubusercontent.com/johan/world.geo.json/master/countries/CRI.geo.json
+            // Example: https://raw.githubusercontent.com/johan/world.geo.json/master/countries/CRI.geo.json COSTA RICA
             var url = $"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/{countryCode}.geo.json";
 
             var response = await _httpClient.GetAsync(url);

@@ -120,6 +120,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 // HttpClient for LocationController
 builder.Services.AddHttpClient();
+// HttpClient for HuggingFaceService
+builder.Services.AddHttpClient<HuggingFaceService>();
+
+builder.Services.AddHttpClient("RestCountries", c => {
+    c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
+});
+builder.Services.AddHttpClient("WorldBank", c =>
+{
+    c.BaseAddress = new Uri("https://api.worldbank.org/v2/");
+});
+
 // -------------------------------------------
 // App build and configuration
 var app = builder.Build();
