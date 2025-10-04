@@ -466,3 +466,4 @@ wwwroot/
 **/Properties/
 **/Properties/*
 Api_Orbis_Project/appsettings.json
+**/appsettings.Development.json
