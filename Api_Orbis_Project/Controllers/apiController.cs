@@ -2,11 +2,13 @@ using Api_Orbis_Project.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api_Orbis_Project.Controllers
-{
+{   
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class LocationController : ControllerBase
     {
         private readonly HttpClient _httpClient;
