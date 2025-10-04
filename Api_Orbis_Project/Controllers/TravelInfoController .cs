@@ -65,20 +65,38 @@ namespace Api_Orbis_Project.Controllers
                 // =====================
                 // 2. Health data (World Bank)
                 // =====================
+                HealthDto? healthInfo = null;
                 var worldBankUrl = $"https://api.worldbank.org/v2/country/{countryCode}/indicator/SH.XPD.CHEX.PC.CD?format=json";
                 var worldBankResponse = await _httpClient.GetAsync(worldBankUrl);
 
-                JsonElement? healthData = null;
                 if (worldBankResponse.IsSuccessStatusCode)
                 {
-                    var worldBankJson = await worldBankResponse.Content.ReadAsStringAsync();
-                    try
+                    var worldBankJson = await worldBankResponse.Content.ReadFromJsonAsync<JsonElement[]>();
+
+                    if (worldBankJson?.Length > 1 && worldBankJson[1].ValueKind == JsonValueKind.Array)
                     {
-                        healthData = JsonDocument.Parse(worldBankJson).RootElement;
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        _logger.LogError(jsonEx, "Error parsing WorldBank JSON for {countryCode}", countryCode);
+                        var points = new List<HealthDataPoint>();
+
+                        foreach (var item in worldBankJson[1].EnumerateArray())
+                        {
+                            var year = item.GetProperty("date").GetString();
+                            var value = item.GetProperty("value");
+
+                            if (int.TryParse(year, out int parsedYear))
+                            {
+                                points.Add(new HealthDataPoint
+                                {
+                                    Year = parsedYear,
+                                    Value = value.ValueKind == JsonValueKind.Null ? null : value.GetDecimal()
+                                });
+                            }
+                        }
+
+                        healthInfo = new HealthDto
+                        {
+                            CountryCode = countryCode.ToUpper(),
+                            Data = points.OrderByDescending(p => p.Year).ToList()
+                        };
                     }
                 }
 
@@ -119,7 +137,7 @@ namespace Api_Orbis_Project.Controllers
                         Languages = countryData?.Languages?.Values,
                         Capital = countryData?.Capital
                     },
-                    Health = healthData,
+                    Health = healthInfo,
                     GeoJson = geoJson
                 };
 
