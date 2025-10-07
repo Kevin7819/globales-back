@@ -49,7 +49,7 @@ namespace api.Controllers
                 // Check unique username
                 var existingUserByName = await _dbContext.Users
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(u => u.Name == dto.UserName);
+                    .FirstOrDefaultAsync(u => u.Name == dto.Name);
                 if (existingUserByName != null)
                 {
                     return Conflict(new
@@ -74,15 +74,14 @@ namespace api.Controllers
 
                 var user = new User
                 {
-                    Name = dto.UserName,
-                    Email = dto.Email,
+                    Name = dto.Name, // username
+                    Email = dto.Email,   // email
                     Password = _utils.EncryptSHA256(dto.Password),
                     CountryOfOrigin = dto.CountryOfOrigin,
                     PreferredLanguage = dto.PreferredLanguage,
                     BirthDate = dto.BirthDate,
                     UserRole = Api_Orbis_Project.Models.User.Role.Passenger
                 };
-
 
                 _dbContext.Users.Add(user);
                 await _dbContext.SaveChangesAsync();
@@ -107,12 +106,12 @@ namespace api.Controllers
         }
 
         /// <summary>
-        /// Authenticate user and return JWT.
+        /// Authenticate user and return JWT using email.
         /// </summary>
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.UserName) || string.IsNullOrWhiteSpace(dto.Password))
+            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
             {
                 return BadRequest(new
                 {
@@ -123,8 +122,9 @@ namespace api.Controllers
 
             var hashed = _utils.EncryptSHA256(dto.Password);
 
+            // Login by email
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Name == dto.UserName && u.Password == hashed);
+                .FirstOrDefaultAsync(u => u.Email == dto.Email && u.Password == hashed);
 
             if (user == null)
             {
@@ -138,9 +138,9 @@ namespace api.Controllers
             var loginResponse = new LoginResponseDto
             {
                 id = user.UserId,
-                userName = user.Name!,
+                name = user.Name!,
                 email = user.Email ?? string.Empty,
-                token = _utils.GenerateJWT(user), 
+                token = _utils.GenerateJWT(user),
                 role = user.UserRole.ToString()
             };
 

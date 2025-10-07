@@ -11,7 +11,8 @@
     {
         Tourism,
         Business,
-        Health
+        Health,
+        Personal
     }
 
     public enum AlertType

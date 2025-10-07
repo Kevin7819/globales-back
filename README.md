@@ -41,7 +41,7 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=DELLKEV\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server="TUSERVIDOR"\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
 
   "Logging": {
@@ -55,6 +55,10 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
     "Issuer": "OrbisAPI",
     "Audience": "OrbisUsers",
     "ExpireMinutes": 60
+  },
+  "HuggingFace": {
+    "ApiKey": "api-key",  
+    "Model": "Kwaipilot/KAT-Dev"
   },
   "AllowedHosts": "*"
 }

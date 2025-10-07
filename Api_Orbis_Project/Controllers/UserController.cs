@@ -41,7 +41,7 @@ namespace Api_Orbis_Project.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Passenger")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {

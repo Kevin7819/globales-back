@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using api.Config;
 
-namespace api.Services
+namespace Api_Orbis_Project.Services
 {
     // Service responsible for JWT authentication and token generation
     public class AuthService
