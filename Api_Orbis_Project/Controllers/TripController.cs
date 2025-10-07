@@ -28,7 +28,7 @@ namespace Api_Orbis_Project.Controllers
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripRequestDto dto)
         {
             var userId = GetUserIdFromToken();
