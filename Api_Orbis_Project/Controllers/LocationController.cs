@@ -9,7 +9,6 @@ namespace Api_Orbis_Project.Controllers
 {   
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class LocationController : ControllerBase
     {
         private readonly HttpClient _httpClient;
