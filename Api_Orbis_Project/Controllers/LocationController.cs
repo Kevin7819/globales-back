@@ -2,9 +2,11 @@ using Api_Orbis_Project.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace Api_Orbis_Project.Controllers
-{
+{   
     [ApiController]
     [Route("api/[controller]")]
     public class LocationController : ControllerBase
@@ -15,13 +17,13 @@ namespace Api_Orbis_Project.Controllers
         {
             _httpClient = httpClient;
         }
+
         /// <summary>
         /// Get a list of countries from RestCountries API
         /// </summary>
         [HttpGet("countries")]
         public async Task<IActionResult> GetCountries()
         {
-            // Call RestCountries API
             var response = await _httpClient.GetAsync("https://restcountries.com/v3.1/all?fields=name");
             response.EnsureSuccessStatusCode();
 
@@ -29,8 +31,7 @@ namespace Api_Orbis_Project.Controllers
 
             if (countries == null)
                 return StatusCode(500, "Error fetching countries");
-                
-            // Extract "Common" names, sort alphabetically
+
             var countryNames = countries
                 .Where(c => c.Name != null && c.Name.Common != null)
                 .Select(c => c.Name.Common)
@@ -40,10 +41,12 @@ namespace Api_Orbis_Project.Controllers
             return Ok(countryNames);
         }
 
+        /// <summary>
+        /// Get a list of languages from RestCountries API
+        /// </summary>
         [HttpGet("languages")]
         public async Task<IActionResult> GetLanguages()
-        {   
-            // Call RestCountries API
+        {
             var response = await _httpClient.GetAsync("https://restcountries.com/v3.1/all?fields=languages");
             response.EnsureSuccessStatusCode();
 
@@ -52,16 +55,53 @@ namespace Api_Orbis_Project.Controllers
             if (countries == null)
                 return StatusCode(500, "Error fetching countries");
 
-            // Use HashSet to avoid duplicate languages
             var languages = new HashSet<string>();
             foreach (var c in countries)
             {
                 if (c.Languages != null)
+                {
                     foreach (var lang in c.Languages.Values)
                         languages.Add(lang);
+                }
             }
 
             return Ok(languages.OrderBy(l => l));
+        }
+
+        /// <summary>
+        /// Get health data for a country using World Bank API
+        /// Example indicator: SH.XPD.CHEX.PC.CD (Current health expenditure per capita)
+        /// </summary>
+        [HttpGet("health/{countryCode}")]
+        public async Task<IActionResult> GetHealthData(string countryCode)
+        {
+            // Example World Bank API endpoint
+            var url = $"https://api.worldbank.org/v2/country/{countryCode}/indicator/SH.XPD.CHEX.PC.CD?format=json";
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode, "Error fetching health data");
+
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(JsonDocument.Parse(content));
+        }
+
+        /// <summary>
+        /// Get GeoJSON borders for a country
+        /// Uses a free GitHub dataset of world borders
+        /// </summary>
+        [HttpGet("geojson/{countryCode}")]
+        public async Task<IActionResult> GetCountryGeoJson(string countryCode)
+        {
+            // Example: https://raw.githubusercontent.com/johan/world.geo.json/master/countries/CRI.geo.json COSTA RICA
+            var url = $"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/{countryCode}.geo.json";
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode, "Error fetching GeoJSON");
+
+            var content = await response.Content.ReadAsStringAsync();
+            return Ok(JsonDocument.Parse(content));
         }
     }
 }

@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // -------------------------------------------
+// -------------------------------------------
 // JWT configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -32,7 +33,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(jwtSettings["Key"]))
         };
 
-        // Optional: log token errors
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
@@ -47,6 +47,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
+builder.Services.AddAuthorization();
 
 // -------------------------------------------
 // Custom services
@@ -120,6 +122,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 // HttpClient for LocationController
 builder.Services.AddHttpClient();
+// HttpClient for HuggingFaceService
+builder.Services.AddHttpClient<HuggingFaceService>();
+
+builder.Services.AddHttpClient("RestCountries", c => {
+    c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
+});
+builder.Services.AddHttpClient("WorldBank", c =>
+{
+    c.BaseAddress = new Uri("https://api.worldbank.org/v2/");
+});
+
 // -------------------------------------------
 // App build and configuration
 var app = builder.Build();
@@ -136,6 +149,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication(); // JWT validation
 app.UseAuthorization();

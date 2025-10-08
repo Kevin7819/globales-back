@@ -1,5 +1,7 @@
 ﻿using Api_Orbis_Project.Dtos;
 using Api_Orbis_Project.Services;
+using Api_Orbis_Project.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -16,6 +18,22 @@ namespace Api_Orbis_Project.Controllers
             _userService = userService;
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUserByIdAsync(userId.Value);
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -23,6 +41,7 @@ namespace Api_Orbis_Project.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Admin,Passenger")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -31,6 +50,7 @@ namespace Api_Orbis_Project.Controllers
             return Ok(user);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
         {
@@ -38,6 +58,7 @@ namespace Api_Orbis_Project.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = newUser.UserId }, newUser);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
         {
@@ -46,6 +67,7 @@ namespace Api_Orbis_Project.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

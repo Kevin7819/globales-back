@@ -6,7 +6,7 @@ namespace Api_Orbis_Project.Dtos
     public class RegisterDto
     {
         [Required]
-        public string UserName { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         [Required, EmailAddress]
         public string Email { get; set; } = null!;

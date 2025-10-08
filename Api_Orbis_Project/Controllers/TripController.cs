@@ -6,12 +6,14 @@ using Api_Orbis_Project.Dtos.Trip;
 using Api_Orbis_Project.Mappers;
 using Api_Orbis_Project.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Api_Orbis_Project.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Requieren autenticación
+    [Authorize]
     public class TripController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -26,7 +28,7 @@ namespace Api_Orbis_Project.Controllers
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripRequestDto dto)
         {
             var userId = GetUserIdFromToken();
