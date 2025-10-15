@@ -122,8 +122,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 // HttpClient for LocationController
 builder.Services.AddHttpClient();
-// HttpClient for HuggingFaceService
-builder.Services.AddHttpClient<HuggingFaceService>();
+builder.Services.AddHttpClient<IHuggingFaceService, HuggingFaceService>();
+builder.Services.AddScoped<IIAService, IAService>();
+
 
 builder.Services.AddHttpClient("RestCountries", c => {
     c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
