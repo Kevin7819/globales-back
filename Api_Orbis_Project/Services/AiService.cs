@@ -32,29 +32,39 @@ namespace Api_Orbis_Project.Services
             // Uses normal AskAsync for conversational responses
             return await _huggingFace.AskAsync(question, lang);
         }
-
-        /// <summary>
-        /// Requests the AI to generate a pure GeoJSON FeatureCollection with simulated data for a given country.
-        /// </summary>
         public async Task<string> GetMapDataRawAsync(string countryCode)
         {
-            // Calls the GeoJSON-only method to ensure valid JSON output
             return await _huggingFace.GetGeoJsonAsync(countryCode, "general");
         }
 
-        /// <summary>
-        /// Requests the AI to generate GeoJSON filtered by category (salud, seguridad, cultura).
-        /// </summary>
         public async Task<string> GetMapDataByCategoryAsync(string countryCode, string category)
         {
             string normalizedCategory = category.ToLower();
 
-            // Ensure category is valid
             if (normalizedCategory != "salud" && normalizedCategory != "seguridad" && normalizedCategory != "cultura")
-                throw new ArgumentException("Categoría no válida. Debe ser 'salud', 'seguridad' o 'cultura'.");
+                throw new ArgumentException("Categoría no válida.");
 
-            // Uses GetGeoJsonAsync to ensure the response is pure JSON
-            return await _huggingFace.GetGeoJsonAsync(countryCode, normalizedCategory);
+            var raw = await _huggingFace.GetGeoJsonAsync(countryCode, normalizedCategory);
+            
+            // Limpieza robusta
+            var clean = raw
+                .Replace("```json", "")
+                .Replace("```", "")
+                .Replace("]>**Error**:", "")
+                .Replace("**Error**:", "")
+                .Replace("Intentaré corregirlo.", "")
+                .Trim();
+
+            // Extraer solo el JSON entre el primer { y el último }
+            var start = clean.IndexOf('{');
+            var end = clean.LastIndexOf('}');
+            
+            if (start >= 0 && end > start)
+            {
+                clean = clean.Substring(start, end - start + 1);
+            }
+
+            return clean;
         }
     }
 }

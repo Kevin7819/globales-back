@@ -6,7 +6,7 @@ using Api_Orbis_Project.Services;
 namespace Api_Orbis_Project.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AiController : ControllerBase
     {
         private readonly IIAService _aiService;
@@ -14,6 +14,7 @@ namespace Api_Orbis_Project.Controllers
         public AiController(IIAService aiService)
         {
             _aiService = aiService;
+            Console.WriteLine("✅ AiController inicializado");
         }
 
         [HttpGet("ask")]
@@ -78,24 +79,70 @@ namespace Api_Orbis_Project.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetSalud(string countryCode)
         {
-            var data = await _aiService.GetMapDataByCategoryAsync(countryCode, "salud");
-            return Ok(data);
+            try
+            {
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "salud");
+                
+                // Parsear el string a JSON object
+                var jsonObject = JsonSerializer.Deserialize<JsonElement>(dataString);
+                return Ok(jsonObject);
+            }
+            catch (Exception ex)
+            {
+                // Si falla el parseo, devolver el string limpio
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "salud");
+                var cleanData = dataString.Replace("```json", "").Replace("```", "").Trim();
+                return Content(cleanData, "application/json");
+            }
         }
 
         [HttpGet("mapdata/seguridad/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSeguridad(string countryCode)
         {
-            var data = await _aiService.GetMapDataByCategoryAsync(countryCode, "seguridad");
-            return Ok(data);
+            try
+            {
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "seguridad");
+                var jsonObject = JsonSerializer.Deserialize<JsonElement>(dataString);
+                return Ok(jsonObject);
+            }
+            catch (Exception ex)
+            {
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "seguridad");
+                var cleanData = dataString.Replace("```json", "").Replace("```", "").Trim();
+                return Content(cleanData, "application/json");
+            }
         }
 
         [HttpGet("mapdata/cultura/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetCultura(string countryCode)
         {
-            var data = await _aiService.GetMapDataByCategoryAsync(countryCode, "cultura");
-            return Ok(data);
+            try
+            {
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "cultura");
+                var jsonObject = JsonSerializer.Deserialize<JsonElement>(dataString);
+                return Ok(jsonObject);
+            }
+            catch (Exception ex)
+            {
+                var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "cultura");
+                var cleanData = dataString.Replace("```json", "").Replace("```", "").Trim();
+                return Content(cleanData, "application/json");
+            }
+        }
+
+        [HttpGet("test")]
+        [AllowAnonymous]
+        public IActionResult Test()
+        {
+            Console.WriteLine("🔍 AiController/Test endpoint llamado");
+            return Ok(new { 
+                message = "AiController is working!", 
+                timestamp = DateTime.UtcNow,
+                controller = "AiController",
+                route = "api/[controller]"
+            });
         }
     }
 }

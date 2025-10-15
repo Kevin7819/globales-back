@@ -1,11 +1,10 @@
 using Api_Orbis_Project.Data;
 using Api_Orbis_Project.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer; // JWT
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using api.Custome;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// -------------------------------------------
 // -------------------------------------------
 // JWT configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -30,7 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? ""))
         };
 
         options.Events = new JwtBearerEvents
@@ -53,7 +51,7 @@ builder.Services.AddAuthorization();
 // -------------------------------------------
 // Custom services
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<Utils>();
+builder.Services.AddScoped<api.Custome.Utils>();
 
 // -------------------------------------------
 // CORS configuration for frontend
@@ -62,8 +60,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:3000",  // React / Next.js
-                "http://localhost:8081"   // Expo web
+                "http://localhost:3000",
+                "http://localhost:8081",
+                "http://192.168.0.103:8081"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -94,7 +93,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API for Orbis Project"
     });
 
-    // Add JWT auth to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Enter JWT like: Bearer {token}",
@@ -120,15 +118,18 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-// HttpClient for LocationController
+
+// -------------------------------------------
+// HttpClient services
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IHuggingFaceService, HuggingFaceService>();
+builder.Services.AddScoped<IHuggingFaceService, HuggingFaceService>();
 builder.Services.AddScoped<IIAService, IAService>();
-
 
 builder.Services.AddHttpClient("RestCountries", c => {
     c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
 });
+
 builder.Services.AddHttpClient("WorldBank", c =>
 {
     c.BaseAddress = new Uri("https://api.worldbank.org/v2/");
@@ -140,6 +141,28 @@ var app = builder.Build();
 
 Console.WriteLine("Starting Orbis API...");
 
+// Debug: Verificar servicios registrados
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        var aiService = serviceProvider.GetService<IIAService>();
+        var huggingService = serviceProvider.GetService<IHuggingFaceService>();
+        
+        Console.WriteLine($"🔍 IIAService registrado: {aiService != null}");
+        Console.WriteLine($"🔍 IHuggingFaceService registrado: {huggingService != null}");
+        
+        // Para verificar AiController
+        var controller = serviceProvider.GetService<Api_Orbis_Project.Controllers.AiController>();
+        Console.WriteLine($"🔍 AiController puede resolverse: {controller != null}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error resolviendo servicios: {ex.Message}");
+    }
+}
+
 // Enable Swagger only in development
 if (app.Environment.IsDevelopment())
 {
@@ -148,13 +171,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
-app.UseCors("AllowReactApp");
-
-app.UseAuthentication(); // JWT validation
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
