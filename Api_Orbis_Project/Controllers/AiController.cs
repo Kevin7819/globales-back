@@ -16,7 +16,6 @@ namespace Api_Orbis_Project.Controllers
             _aiService = aiService;
         }
 
-        // 🔹 1. Endpoint general para preguntas (sin autenticación)
         [HttpGet("ask")]
         [AllowAnonymous]
         public async Task<IActionResult> Ask([FromQuery] string question, [FromQuery] string lang = "es")
@@ -35,7 +34,6 @@ namespace Api_Orbis_Project.Controllers
             }
         }
 
-        // 🔹 2. Datos crudos para el mapa (sin autenticación)
         [HttpGet("mapdata/raw/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapDataRaw(string countryCode)
@@ -44,7 +42,6 @@ namespace Api_Orbis_Project.Controllers
             return Ok(new { raw });
         }
 
-        // 🔹 3. Mapa limpiado (sin autenticación)
         [HttpGet("mapdata/clean/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapDataClean(string countryCode)
@@ -54,7 +51,6 @@ namespace Api_Orbis_Project.Controllers
             return Ok(new { clean });
         }
 
-        // 🔹 4. Mapa parseado a GeoJSON (sin autenticación)
         [HttpGet("mapdata/geojson/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetMapDataGeoJson(string countryCode)
@@ -78,7 +74,6 @@ namespace Api_Orbis_Project.Controllers
             }
         }
 
-        // 🔹 5. Categoría: Salud (sin autenticación)
         [HttpGet("mapdata/salud/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSalud(string countryCode)
@@ -87,7 +82,6 @@ namespace Api_Orbis_Project.Controllers
             return Ok(data);
         }
 
-        // 🔹 6. Categoría: Seguridad (sin autenticación)
         [HttpGet("mapdata/seguridad/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetSeguridad(string countryCode)
@@ -96,7 +90,6 @@ namespace Api_Orbis_Project.Controllers
             return Ok(data);
         }
 
-        // 🔹 7. Categoría: Cultura (sin autenticación)
         [HttpGet("mapdata/cultura/{countryCode}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetCultura(string countryCode)

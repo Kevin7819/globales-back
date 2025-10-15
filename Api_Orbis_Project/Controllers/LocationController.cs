@@ -88,7 +88,6 @@ namespace Api_Orbis_Project.Controllers
 
         /// <summary>
         /// Get GeoJSON borders for a country
-        /// Uses a free GitHub dataset of world borders
         /// </summary>
         [HttpGet("geojson/{countryCode}")]
         public async Task<IActionResult> GetCountryGeoJson(string countryCode)
