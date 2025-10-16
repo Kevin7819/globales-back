@@ -62,7 +62,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:3000",
                 "http://localhost:8081",
-                "http://192.168.0.103:8081"
+                "http://192.168.0.103:8081",
+                "http://localhost:5089" 
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -125,7 +126,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IHuggingFaceService, HuggingFaceService>();
 builder.Services.AddScoped<IHuggingFaceService, HuggingFaceService>();
 builder.Services.AddScoped<IIAService, IAService>();
-
+builder.Services.AddHttpClient<IGeocodingService, GeocodingService>();
 builder.Services.AddHttpClient("RestCountries", c => {
     c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
 });
@@ -141,7 +142,6 @@ var app = builder.Build();
 
 Console.WriteLine("Starting Orbis API...");
 
-// Debug: Verificar servicios registrados
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -150,16 +150,15 @@ using (var scope = app.Services.CreateScope())
         var aiService = serviceProvider.GetService<IIAService>();
         var huggingService = serviceProvider.GetService<IHuggingFaceService>();
         
-        Console.WriteLine($"🔍 IIAService registrado: {aiService != null}");
-        Console.WriteLine($"🔍 IHuggingFaceService registrado: {huggingService != null}");
+        Console.WriteLine($"IIAService registrado: {aiService != null}");
+        Console.WriteLine($"IHuggingFaceService registrado: {huggingService != null}");
         
-        // Para verificar AiController
         var controller = serviceProvider.GetService<Api_Orbis_Project.Controllers.AiController>();
-        Console.WriteLine($"🔍 AiController puede resolverse: {controller != null}");
+        Console.WriteLine($"AiController puede resolverse: {controller != null}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error resolviendo servicios: {ex.Message}");
+        Console.WriteLine($"Error resolviendo servicios: {ex.Message}");
     }
 }
 
@@ -171,9 +170,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
+
+app.UseRouting();  
+
+app.UseCors("AllowFrontend");  
+
+app.UseAuthentication();  
+app.UseAuthorization(); 
+
+app.MapControllers();    
 
 app.Run();

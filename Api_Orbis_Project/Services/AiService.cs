@@ -5,13 +5,10 @@ namespace Api_Orbis_Project.Services
 {
     public interface IIAService
     {
-        // 🔹 Generates a general AI answer
         Task<string> GetGeneralAnswerAsync(string question, string lang = "es");
 
-        // 🔹 Generates raw GeoJSON data (for an entire country)
         Task<string> GetMapDataRawAsync(string countryCode);
 
-        // 🔹 Generates GeoJSON data filtered by specific category
         Task<string> GetMapDataByCategoryAsync(string countryCode, string category);
     }
 
@@ -29,7 +26,6 @@ namespace Api_Orbis_Project.Services
         /// </summary>
         public async Task<string> GetGeneralAnswerAsync(string question, string lang = "es")
         {
-            // Uses normal AskAsync for conversational responses
             return await _huggingFace.AskAsync(question, lang);
         }
         public async Task<string> GetMapDataRawAsync(string countryCode)
@@ -55,7 +51,6 @@ namespace Api_Orbis_Project.Services
                 .Replace("Intentaré corregirlo.", "")
                 .Trim();
 
-            // Extraer solo el JSON entre el primer { y el último }
             var start = clean.IndexOf('{');
             var end = clean.LastIndexOf('}');
             

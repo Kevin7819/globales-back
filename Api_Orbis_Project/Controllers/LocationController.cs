@@ -119,5 +119,35 @@ namespace Api_Orbis_Project.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        [HttpGet("country/{countryName}")]
+        public async Task<IActionResult> GetCountryInfo(string countryName)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"https://restcountries.com/v3.1/name/{Uri.EscapeDataString(countryName)}");
+                if (!response.IsSuccessStatusCode)
+                    return NotFound(new { error = "Country not found" });
+
+                var countries = await response.Content.ReadFromJsonAsync<List<CountryResponse>>();
+                var country = countries?.FirstOrDefault();
+
+                if (country == null)
+                    return NotFound(new { error = "Country not found" });
+
+                return Ok(new {
+                    name = country.Name.Common,
+                    officialName = country.Name.Official,
+                    countryCode = country.Cca2,
+                    coordinates = country.Latlng,
+                    currencies = country.Currencies,
+                    languages = country.Languages
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }

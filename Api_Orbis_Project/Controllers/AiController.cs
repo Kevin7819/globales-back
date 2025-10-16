@@ -14,7 +14,7 @@ namespace Api_Orbis_Project.Controllers
         public AiController(IIAService aiService)
         {
             _aiService = aiService;
-            Console.WriteLine("✅ AiController inicializado");
+            Console.WriteLine("AiController inicializado");
         }
 
         [HttpGet("ask")]
@@ -83,13 +83,11 @@ namespace Api_Orbis_Project.Controllers
             {
                 var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "salud");
                 
-                // Parsear el string a JSON object
                 var jsonObject = JsonSerializer.Deserialize<JsonElement>(dataString);
                 return Ok(jsonObject);
             }
             catch (Exception ex)
             {
-                // Si falla el parseo, devolver el string limpio
                 var dataString = await _aiService.GetMapDataByCategoryAsync(countryCode, "salud");
                 var cleanData = dataString.Replace("```json", "").Replace("```", "").Trim();
                 return Content(cleanData, "application/json");
@@ -132,17 +130,5 @@ namespace Api_Orbis_Project.Controllers
             }
         }
 
-        [HttpGet("test")]
-        [AllowAnonymous]
-        public IActionResult Test()
-        {
-            Console.WriteLine("🔍 AiController/Test endpoint llamado");
-            return Ok(new { 
-                message = "AiController is working!", 
-                timestamp = DateTime.UtcNow,
-                controller = "AiController",
-                route = "api/[controller]"
-            });
-        }
     }
 }

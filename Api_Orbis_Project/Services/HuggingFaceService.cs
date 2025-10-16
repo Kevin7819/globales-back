@@ -24,7 +24,7 @@ namespace Api_Orbis_Project.Services
         {
             _httpClient = httpClient;
             _apiKey = config["HuggingFace:ApiKey"] 
-                ?? throw new Exception("❌ HuggingFace ApiKey not found in configuration.");
+                ?? throw new Exception("HuggingFace ApiKey not found in configuration.");
             _model = config["HuggingFace:Model"] ?? "Kwaipilot/KAT-Dev";
         }
 
@@ -66,7 +66,7 @@ namespace Api_Orbis_Project.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"⚠️ Hugging Face API error: {response.StatusCode}");
+                    Console.WriteLine($"Hugging Face API error: {response.StatusCode}");
                     return null;
                 }
 
@@ -82,7 +82,7 @@ namespace Api_Orbis_Project.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Exception en AskAsync: {ex.Message}");
+                Console.WriteLine($"Exception en AskAsync: {ex.Message}");
                 return null;
             }
         }
@@ -103,7 +103,7 @@ namespace Api_Orbis_Project.Services
             // Si la API falla, usar datos hardcodeados específicos
             if (string.IsNullOrEmpty(result))
             {
-                Console.WriteLine($"⚠️ API falló, usando fallback para {countryCode}/{category}");
+                Console.WriteLine($"API falló, usando fallback para {countryCode}/{category}");
                 return GetFallbackGeoJson(countryCode, category);
             }
 
