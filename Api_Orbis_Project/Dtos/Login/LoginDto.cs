@@ -5,7 +5,7 @@ namespace Api_Orbis_Project.Dtos
 {
     public class LoginDto
     {
-        [Required]
+        [Required, EmailAddress]
         public string Email { get; set; } = null!;
 
         [Required]

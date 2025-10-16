@@ -88,20 +88,66 @@ namespace Api_Orbis_Project.Controllers
 
         /// <summary>
         /// Get GeoJSON borders for a country
-        /// Uses a free GitHub dataset of world borders
         /// </summary>
         [HttpGet("geojson/{countryCode}")]
         public async Task<IActionResult> GetCountryGeoJson(string countryCode)
         {
-            // Example: https://raw.githubusercontent.com/johan/world.geo.json/master/countries/CRI.geo.json COSTA RICA
-            var url = $"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/{countryCode}.geo.json";
+            try
+            {
+                Console.WriteLine($"Solicitando GeoJSON para: {countryCode}");
+                
+                var url = $"https://raw.githubusercontent.com/johan/world.geo.json/master/countries/{countryCode}.geo.json";
+                Console.WriteLine($"URL: {url}");
+                
+                var response = await _httpClient.GetAsync(url);
+                Console.WriteLine($"Response status: {response.StatusCode}");
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                    return StatusCode((int)response.StatusCode, new { error = $"HTTP {response.StatusCode}" });
+                }
 
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
-                return StatusCode((int)response.StatusCode, "Error fetching GeoJSON");
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Content length: {content.Length}");
+                
+                return Content(content, "application/json");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex}");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
 
-            var content = await response.Content.ReadAsStringAsync();
-            return Ok(JsonDocument.Parse(content));
+        [HttpGet("country/{countryName}")]
+        public async Task<IActionResult> GetCountryInfo(string countryName)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"https://restcountries.com/v3.1/name/{Uri.EscapeDataString(countryName)}");
+                if (!response.IsSuccessStatusCode)
+                    return NotFound(new { error = "Country not found" });
+
+                var countries = await response.Content.ReadFromJsonAsync<List<CountryResponse>>();
+                var country = countries?.FirstOrDefault();
+
+                if (country == null)
+                    return NotFound(new { error = "Country not found" });
+
+                return Ok(new {
+                    name = country.Name.Common,
+                    officialName = country.Name.Official,
+                    countryCode = country.Cca2,
+                    coordinates = country.Latlng,
+                    currencies = country.Currencies,
+                    languages = country.Languages
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 }

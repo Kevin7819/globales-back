@@ -30,6 +30,11 @@ namespace Api_Orbis_Project.Models
 
         [Required]
         public TripType Type { get; set; }
+        
+        [MaxLength(3)]
+        public string CountryCode { get; set; } = string.Empty;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 
 }

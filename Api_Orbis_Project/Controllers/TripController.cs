@@ -18,9 +18,12 @@ namespace Api_Orbis_Project.Controllers
     {
         private readonly AppDbContext _context;
 
-        public TripController(AppDbContext context)
+        private readonly IGeocodingService _geocodingService;
+
+        public TripController(AppDbContext context, IGeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         private int GetUserIdFromToken()
@@ -34,11 +37,43 @@ namespace Api_Orbis_Project.Controllers
             var userId = GetUserIdFromToken();
             var trip = dto.ToTripFromCreateDto(userId);
 
+            var (lat, lng, countryCode) = await _geocodingService.GetCoordinatesAndCountry(dto.Destination);
+            
+            trip.CountryCode = countryCode;
+            trip.Latitude = lat;
+            trip.Longitude = lng;
+
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
 
             return Ok(trip.ToDto());
         }
+
+        [HttpGet("nearest")]
+        public async Task<IActionResult> GetNearestTrip()
+        {
+            var userId = GetUserIdFromToken();
+            var currentDate = DateTime.UtcNow;
+
+            var nearestTrip = await _context.Trips
+                .Where(t => t.UserId == userId && t.DepartureDate >= currentDate)
+                .OrderBy(t => t.DepartureDate)
+                .FirstOrDefaultAsync();
+
+            if (nearestTrip == null)
+            {
+                nearestTrip = await _context.Trips
+                    .Where(t => t.UserId == userId)
+                    .OrderByDescending(t => t.DepartureDate)
+                    .FirstOrDefaultAsync();
+            }
+
+            if (nearestTrip == null)
+                return NotFound(new { message = "No trips found" });
+
+            return Ok(nearestTrip.ToDto());
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetUserTrips()

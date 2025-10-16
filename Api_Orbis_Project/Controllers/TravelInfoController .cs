@@ -129,13 +129,13 @@ namespace Api_Orbis_Project.Controllers
                     BasicInfo = new BasicInfoDto
                     {
                         Code = countryCode.ToUpper(),
-                        Name = countryData?.Name?.Common,
-                        OfficialName = countryData?.Name?.Official,
-                        Region = countryData?.Region,
-                        Subregion = countryData?.Subregion,
-                        Population = countryData?.Population,
-                        Languages = countryData?.Languages?.Values,
-                        Capital = countryData?.Capital
+                        Name = countryData?.Name?.Common ?? "Unknown",
+                        OfficialName = countryData?.Name?.Official ?? "Unknown",
+                        Region = countryData?.Region ?? "Unknown",
+                        Subregion = countryData?.Subregion ?? "Unknown",
+                        Population = countryData?.Population ?? 0,
+                        Languages = countryData?.Languages?.Values.ToList() ?? new List<string>(),
+                        Capital = countryData?.Capital?.ToList() ?? new List<string>()
                     },
                     Health = healthInfo,
                     GeoJson = geoJson
