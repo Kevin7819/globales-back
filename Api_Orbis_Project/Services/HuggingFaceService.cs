@@ -1,10 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
-using System;
+using Api_Orbis_Project.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Api_Orbis_Project.Services
 {
@@ -12,6 +14,10 @@ namespace Api_Orbis_Project.Services
     {
         Task<string> AskAsync(string prompt, string language = "es");
         Task<string> GetGeoJsonAsync(string countryCode, string category = "general");
+        Task<QuickGuideResponse> GenerateQuickGuideAsync(string countryCode);
+        Task<SafetyGuide> GenerateSafetyGuideAsync(string countryCode);
+        Task<HealthGuide> GenerateHealthGuideAsync(string countryCode);
+        Task<CultureGuide> GenerateCultureGuideAsync(string countryCode);
     }
 
     public class HuggingFaceService : IHuggingFaceService
@@ -278,180 +284,428 @@ namespace Api_Orbis_Project.Services
                 {
                     case "salud":
                         return @"{
-                            ""type"": ""FeatureCollection"",
-                            ""features"": [
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Brote Dengue - La Carpio"",
-                                        ""category"": ""salud"",
-                                        ""risk_type"": ""dengue"",
-                                        ""risk_level"": ""high"",
-                                        ""description"": ""Zona con alta incidencia de casos de dengue"",
-                                        ""radius"": 800
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.095, 9.945]
-                                    }
+                        ""type"": ""FeatureCollection"",
+                        ""features"": [
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Brote Dengue - La Carpio"",
+                                    ""category"": ""salud"",
+                                    ""risk_type"": ""dengue"",
+                                    ""risk_level"": ""high"",
+                                    ""description"": ""Zona con alta incidencia de casos de dengue"",
+                                    ""radius"": 800
                                 },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Contaminación Aire - Pavas"",
-                                        ""category"": ""salud"",
-                                        ""risk_type"": ""contaminacion"",
-                                        ""risk_level"": ""medium"",
-                                        ""description"": ""Alta contaminación por tráfico e industria"",
-                                        ""radius"": 1200
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.135, 9.955]
-                                    }
-                                },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Falta Acceso Salud - Los Guido"",
-                                        ""category"": ""salud"",
-                                        ""risk_type"": ""acceso_salud"",
-                                        ""risk_level"": ""critical"",
-                                        ""description"": ""Zona marginada con poco acceso a servicios de salud"",
-                                        ""radius"": 1500
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.055, 9.900]
-                                    }
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.095, 9.945]
                                 }
-                            ]
-                        }";
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Contaminación Aire - Pavas"",
+                                    ""category"": ""salud"",
+                                    ""risk_type"": ""contaminacion"",
+                                    ""risk_level"": ""medium"",
+                                    ""description"": ""Alta contaminación por tráfico e industria"",
+                                    ""radius"": 1200
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.135, 9.955]
+                                }
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Falta Acceso Salud - Los Guido"",
+                                    ""category"": ""salud"",
+                                    ""risk_type"": ""acceso_salud"",
+                                    ""risk_level"": ""critical"",
+                                    ""description"": ""Zona marginada con poco acceso a servicios de salud"",
+                                    ""radius"": 1500
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.055, 9.900]
+                                }
+                            }
+                        ]
+                    }";
 
                     case "seguridad":
                         return @"{
-                            ""type"": ""FeatureCollection"",
-                            ""features"": [
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Zona Roja - La Merced"",
-                                        ""category"": ""seguridad"",
-                                        ""risk_type"": ""robos"",
-                                        ""risk_level"": ""high"",
-                                        ""description"": ""Alta incidencia de robos y asaltos"",
-                                        ""radius"": 500,
-                                        ""time_risk"": ""both""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.0875, 9.9280]
-                                    }
+                        ""type"": ""FeatureCollection"",
+                        ""features"": [
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Zona Roja - La Merced"",
+                                    ""category"": ""seguridad"",
+                                    ""risk_type"": ""robos"",
+                                    ""risk_level"": ""high"",
+                                    ""description"": ""Alta incidencia de robos y asaltos"",
+                                    ""radius"": 500,
+                                    ""time_risk"": ""both""
                                 },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Narcotráfico - El Infiernillo"",
-                                        ""category"": ""seguridad"",
-                                        ""risk_type"": ""narcotrafico"",
-                                        ""risk_level"": ""critical"",
-                                        ""description"": ""Zona con presencia de narcotráfico"",
-                                        ""radius"": 300,
-                                        ""time_risk"": ""night""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.0650, 9.9200]
-                                    }
-                                },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Robos Nocturnos - Barrio México"",
-                                        ""category"": ""seguridad"",
-                                        ""risk_type"": ""robos"",
-                                        ""risk_level"": ""medium"",
-                                        ""description"": ""Robos frecuentes durante la noche"",
-                                        ""radius"": 400,
-                                        ""time_risk"": ""night""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.0950, 9.9400]
-                                    }
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.0875, 9.9280]
                                 }
-                            ]
-                        }";
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Narcotráfico - El Infiernillo"",
+                                    ""category"": ""seguridad"",
+                                    ""risk_type"": ""narcotrafico"",
+                                    ""risk_level"": ""critical"",
+                                    ""description"": ""Zona con presencia de narcotráfico"",
+                                    ""radius"": 300,
+                                    ""time_risk"": ""night""
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.0650, 9.9200]
+                                }
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Robos Nocturnos - Barrio México"",
+                                    ""category"": ""seguridad"",
+                                    ""risk_type"": ""robos"",
+                                    ""risk_level"": ""medium"",
+                                    ""description"": ""Robos frecuentes durante la noche"",
+                                    ""radius"": 400,
+                                    ""time_risk"": ""night""
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.0950, 9.9400]
+                                }
+                            }
+                        ]
+                    }";
 
                     case "cultura":
                         return @"{
-                            ""type"": ""FeatureCollection"",
-                            ""features"": [
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Teatro Nacional de Costa Rica"",
-                                        ""category"": ""cultura"",
-                                        ""type"": ""teatro"",
-                                        ""description"": ""Principal teatro y monumento histórico del país"",
-                                        ""importance"": ""national""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.0846, 9.9334]
-                                    }
+                        ""type"": ""FeatureCollection"",
+                        ""features"": [
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Teatro Nacional de Costa Rica"",
+                                    ""category"": ""cultura"",
+                                    ""type"": ""teatro"",
+                                    ""description"": ""Principal teatro y monumento histórico del país"",
+                                    ""importance"": ""national""
                                 },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Museo Nacional de Costa Rica"",
-                                        ""category"": ""cultura"",
-                                        ""type"": ""museo"",
-                                        ""description"": ""Museo de historia y cultura costarricense"",
-                                        ""importance"": ""national""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.0803, 9.9341]
-                                    }
-                                },
-                                {
-                                    ""type"": ""Feature"",
-                                    ""properties"": {
-                                        ""name"": ""Museo de Arte Costarricense"",
-                                        ""category"": ""cultura"",
-                                        ""type"": ""museo"",
-                                        ""description"": ""Museo dedicado al arte costarricense"",
-                                        ""importance"": ""high""
-                                    },
-                                    ""geometry"": {
-                                        ""type"": ""Point"",
-                                        ""coordinates"": [-84.1125, 9.9978]
-                                    }
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.0846, 9.9334]
                                 }
-                            ]
-                        }";
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Museo Nacional de Costa Rica"",
+                                    ""category"": ""cultura"",
+                                    ""type"": ""museo"",
+                                    ""description"": ""Museo de historia y cultura costarricense"",
+                                    ""importance"": ""national""
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.0803, 9.9341]
+                                }
+                            },
+                            {
+                                ""type"": ""Feature"",
+                                ""properties"": {
+                                    ""name"": ""Museo de Arte Costarricense"",
+                                    ""category"": ""cultura"",
+                                    ""type"": ""museo"",
+                                    ""description"": ""Museo dedicado al arte costarricense"",
+                                    ""importance"": ""high""
+                                },
+                                ""geometry"": {
+                                    ""type"": ""Point"",
+                                    ""coordinates"": [-84.1125, 9.9978]
+                                }
+                            }
+                        ]
+                    }";
                 }
             }
 
             // Fallback genérico
             return $@"{{
-                ""type"": ""FeatureCollection"",
-                ""features"": [
-                    {{
-                        ""type"": ""Feature"",
-                        ""properties"": {{
-                            ""name"": ""Punto de ejemplo"",
-                            ""category"": ""{category}"",
-                            ""country"": ""{countryCode}""
-                        }},
-                        ""geometry"": {{
-                            ""type"": ""Point"",
-                            ""coordinates"": [0, 0]
-                        }}
+            ""type"": ""FeatureCollection"",
+            ""features"": [
+                {{
+                    ""type"": ""Feature"",
+                    ""properties"": {{
+                        ""name"": ""Punto de ejemplo"",
+                        ""category"": ""{category}"",
+                        ""country"": ""{countryCode}""
+                    }},
+                    ""geometry"": {{
+                        ""type"": ""Point"",
+                        ""coordinates"": [0, 0]
                     }}
-                ]
-            }}";
+                }}
+            ]
+        }}";
+        }
+
+        // Método auxiliar para limpiar respuestas JSON de marcas Markdown
+        private string CleanJsonResponse(string response)
+        {
+            if (string.IsNullOrEmpty(response))
+                return response;
+
+            // Eliminar bloques de código Markdown
+            response = response.Trim();
+            
+            // Si empieza con ```json y termina con ```, extraer el contenido
+            if (response.StartsWith("```json") && response.EndsWith("```"))
+            {
+                response = response.Substring(7, response.Length - 10).Trim();
+            }
+            // Si solo empieza con ```
+            else if (response.StartsWith("```") && response.EndsWith("```"))
+            {
+                response = response.Substring(3, response.Length - 6).Trim();
+            }
+            
+            // Eliminar cualquier texto antes o después del JSON
+            int firstBrace = response.IndexOf('{');
+            int lastBrace = response.LastIndexOf('}');
+            
+            if (firstBrace >= 0 && lastBrace > firstBrace)
+            {
+                response = response.Substring(firstBrace, lastBrace - firstBrace + 1);
+            }
+
+            return response.Trim();
+        }
+
+        // Método para mejorar los prompts con instrucciones claras
+        private string GetEnhancedPrompt(string basePrompt)
+        {
+            return basePrompt + 
+                   "\n\nINSTRUCCIONES CRÍTICAS:\n" +
+                   "1. Devuelve SOLO el objeto JSON válido\n" +
+                   "2. SIN marcas de código como ```json o ```\n" +
+                   "3. SIN texto explicativo antes o después\n" +
+                   "4. SIN comentarios adicionales\n" +
+                   "5. El JSON debe ser parseable directamente";
+        }
+
+        public async Task<QuickGuideResponse> GenerateQuickGuideAsync(string countryCode)
+        {
+            string basePrompt = $"Genera una guía rápida para el país con código {countryCode}, " +
+                               $"incluyendo resumen general, puntos clave y breve descripción cultural y geográfica. " +
+                               $"Estructura la respuesta en formato JSON con propiedades: CountryCode, CountryName, Summary, KeyPoints, ReadingTimeMinutes.";
+            
+            string enhancedPrompt = GetEnhancedPrompt(basePrompt);
+
+            var result = await AskAsync(enhancedPrompt, "es");
+            if (string.IsNullOrEmpty(result))
+                return new QuickGuideResponse { CountryCode = countryCode, CountryName = "Desconocido", Summary = "Sin datos disponibles." };
+
+            try
+            {
+                result = CleanJsonResponse(result);
+                Console.WriteLine($"QuickGuide JSON limpio: {result}");
+                return JsonSerializer.Deserialize<QuickGuideResponse>(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializando QuickGuide: {ex.Message}");
+                Console.WriteLine($"Respuesta cruda: {result}");
+                return new QuickGuideResponse
+                {
+                    CountryCode = countryCode,
+                    CountryName = "Error de formato",
+                    Summary = result
+                };
+            }
+        }
+        public async Task<SafetyGuide> GenerateSafetyGuideAsync(string countryCode)
+        {
+            string basePrompt = $@"
+            Genera una guía de seguridad para {countryCode} en formato JSON EXACTO con las siguientes propiedades:
+
+            - CountryCode: string
+            - MainRisks: array de objetos con propiedades: Type (string), Description (string)
+            - SafeAreas: array de objetos con propiedades: Name (string), Description (string)  
+            - AvoidAreas: array de objetos con propiedades: Name (string), Description (string)
+            - EmergencyContacts: array de objetos con propiedades: Name (string), Phone (string)
+            - PracticalTips: array de strings
+            - ReadingTimeMinutes: number
+
+            EJEMPLO DE ESTRUCTURA EXACTA:
+            {{
+            ""CountryCode"": ""CRI"",
+            ""MainRisks"": [
+                {{ ""Type"": ""Robos"", ""Description"": ""Robos en transporte público"" }},
+                {{ ""Type"": ""Estafas"", ""Description"": ""Estafas a turistas"" }}
+            ],
+            ""SafeAreas"": [
+                {{ ""Name"": ""Zona Hotelera"", ""Description"": ""Área segura con alta vigilancia"" }}
+            ],
+            ""AvoidAreas"": [
+                {{ ""Name"": ""Centro nocturno"", ""Description"": ""Evitar de noche"" }}
+            ],
+            ""EmergencyContacts"": [
+                {{ ""Name"": ""Policía"", ""Phone"": ""911"" }}
+            ],
+            ""PracticalTips"": [""No mostrar dinero en público"", ""Usar taxi oficial""],
+            ""ReadingTimeMinutes"": 3
+            }}
+
+            Genera información realista para {countryCode}.
+            ";
+
+            string enhancedPrompt = GetEnhancedPrompt(basePrompt);
+
+            var result = await AskAsync(enhancedPrompt, "es");
+            if (string.IsNullOrEmpty(result))
+                return new SafetyGuide { CountryCode = countryCode, PracticalTips = new List<string> { "No se pudo generar información." } };
+
+            try
+            {
+                result = CleanJsonResponse(result);
+                Console.WriteLine($"SafetyGuide JSON limpio: {result}");
+                return JsonSerializer.Deserialize<SafetyGuide>(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializando SafetyGuide: {ex.Message}");
+                Console.WriteLine($"Respuesta cruda: {result}");
+                return new SafetyGuide
+                {
+                    CountryCode = countryCode,
+                    PracticalTips = new List<string> { "Error al interpretar la respuesta del modelo." }
+                };
+            }
+        }
+
+        public async Task<HealthGuide> GenerateHealthGuideAsync(string countryCode)
+        {
+            string basePrompt = $@"
+            Genera una guía de salud para {countryCode} en formato JSON EXACTO con las siguientes propiedades:
+
+            - CountryCode: string
+            - RequiredVaccines: array de objetos con propiedades: Name (string), Description (string)
+            - HealthRisks: array de objetos con propiedades: Type (string), Prevention (string)
+            - HygieneTips: array de strings
+            - MedicalServices: array de objetos con propiedades: Name (string), Address (string)
+            - InsuranceTips: array de strings  
+            - ReadingTimeMinutes: number
+
+            EJEMPLO DE ESTRUCTURA EXACTA:
+            {{
+            ""CountryCode"": ""CRI"",
+            ""RequiredVaccines"": [
+                {{ ""Name"": ""Fiebre Amarilla"", ""Description"": ""Requerida para ciertas zonas"" }}
+            ],
+            ""HealthRisks"": [
+                {{ ""Type"": ""Dengue"", ""Prevention"": ""Usar repelente"" }}
+            ],
+            ""HygieneTips"": [""Beber agua embotellada"", ""Lavarse manos frecuentemente""],
+            ""MedicalServices"": [
+                {{ ""Name"": ""Hospital Central"", ""Address"": ""San José"" }}
+            ],
+            ""InsuranceTips"": [""Llevar seguro de viaje""],
+            ""ReadingTimeMinutes"": 4
+            }}
+
+            Genera información realista para {countryCode}.
+            ";
+
+            string enhancedPrompt = GetEnhancedPrompt(basePrompt);
+
+            var result = await AskAsync(enhancedPrompt, "es");
+            if (string.IsNullOrEmpty(result))
+                return new HealthGuide { CountryCode = countryCode, HygieneTips = new List<string> { "No se pudo generar información." } };
+
+            try
+            {
+                result = CleanJsonResponse(result);
+                Console.WriteLine($"HealthGuide JSON limpio: {result}");
+                return JsonSerializer.Deserialize<HealthGuide>(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializando HealthGuide: {ex.Message}");
+                Console.WriteLine($"Respuesta cruda: {result}");
+                return new HealthGuide
+                {
+                    CountryCode = countryCode,
+                    HygieneTips = new List<string> { "Error al interpretar la respuesta del modelo." }
+                };
+            }
+        }
+
+        public async Task<CultureGuide> GenerateCultureGuideAsync(string countryCode)
+        {
+            string basePrompt = $@"
+            Genera una guía cultural para {countryCode} en formato JSON EXACTO con las siguientes propiedades:
+
+            - CountryCode: string
+            - BasicEtiquette: array de objetos con propiedades: Rule (string), Description (string)
+            - ClothingRules: array de objetos con propiedades: Situation (string), Recommendation (string)
+            - LocalCustoms: array de objetos con propiedades: Name (string), Description (string)
+            - TimingExpectations: array de strings
+            - TippingPractices: array de strings
+            - ReadingTimeMinutes: number
+
+            EJEMPLO DE ESTRUCTURA EXACTA:
+            {{
+            ""CountryCode"": ""CRI"",
+            ""BasicEtiquette"": [
+                {{ ""Rule"": ""Saludo"", ""Description"": ""Saludo cordial"" }}
+            ],
+            ""ClothingRules"": [
+                {{ ""Situation"": ""Playas"", ""Recommendation"": ""Ropa casual"" }}
+            ],
+            ""LocalCustoms"": [
+                {{ ""Name"": ""Pura Vida"", ""Description"": ""Filosofía de vida"" }}
+            ],
+            ""TimingExpectations"": [""Horarios flexibles""],
+            ""TippingPractices"": [""10% en restaurantes""],
+            ""ReadingTimeMinutes"": 3
+            }}
+
+            Genera información realista para {countryCode}.
+            ";
+
+            string enhancedPrompt = GetEnhancedPrompt(basePrompt);
+
+            var result = await AskAsync(enhancedPrompt, "es");
+            if (string.IsNullOrEmpty(result))
+                return new CultureGuide { CountryCode = countryCode, TippingPractices = new List<string> { "No se pudo generar información." } };
+
+            try
+            {
+                result = CleanJsonResponse(result);
+                Console.WriteLine($"CultureGuide JSON limpio: {result}");
+                return JsonSerializer.Deserialize<CultureGuide>(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deserializando CultureGuide: {ex.Message}");
+                Console.WriteLine($"Respuesta cruda: {result}");
+                return new CultureGuide
+                {
+                    CountryCode = countryCode,
+                    TippingPractices = new List<string> { "Error al interpretar la respuesta del modelo." }
+                };
+            }
         }
     }
 }
