@@ -122,11 +122,17 @@ builder.Services.AddSwaggerGen(c =>
 
 // -------------------------------------------
 // HttpClient services
+builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
-builder.Services.AddHttpClient<IHuggingFaceService, HuggingFaceService>();
+
 builder.Services.AddScoped<IHuggingFaceService, HuggingFaceService>();
+builder.Services.AddHttpClient<IHuggingFaceService, HuggingFaceService>();
+
+builder.Services.AddScoped<ITravelGuideService, TravelGuideService>();
+
 builder.Services.AddScoped<IIAService, IAService>();
 builder.Services.AddHttpClient<IGeocodingService, GeocodingService>();
+
 builder.Services.AddHttpClient("RestCountries", c => {
     c.BaseAddress = new Uri("https://restcountries.com/v3.1/");
 });
@@ -149,9 +155,11 @@ using (var scope = app.Services.CreateScope())
     {
         var aiService = serviceProvider.GetService<IIAService>();
         var huggingService = serviceProvider.GetService<IHuggingFaceService>();
+        var travelGuideService = serviceProvider.GetService<ITravelGuideService>();
         
         Console.WriteLine($"IIAService registrado: {aiService != null}");
         Console.WriteLine($"IHuggingFaceService registrado: {huggingService != null}");
+        Console.WriteLine($"ITravelGuideService registrado: {travelGuideService != null}");
         
         var controller = serviceProvider.GetService<Api_Orbis_Project.Controllers.AiController>();
         Console.WriteLine($"AiController puede resolverse: {controller != null}");
