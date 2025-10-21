@@ -124,8 +124,10 @@ dotnet restore
 ```
 
 ### 2️⃣ Build the project
-sh
+
+```sh
 dotnet build
+```
 
 ### 3️⃣ Create the database
 
