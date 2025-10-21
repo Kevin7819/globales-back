@@ -39,6 +39,7 @@ Create a file `appsettings.Development.json` inside `api` with the following con
 Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your credentials:
 
 ```json
+
 {
   "ConnectionStrings": {
     "DefaultConnection": "Server="TUSERVIDOR"\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -51,28 +52,30 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
     }
   },
   "Jwt": {
-    "Key": "378bb149-828a-42ea-88cf-5453a3e672b4",
+    "Key": "JWTKEY",
     "Issuer": "OrbisAPI",
     "Audience": "OrbisUsers",
     "ExpireMinutes": 60
   },
   "HuggingFace": {
-    "ApiKey": "api-key",  
+    "ApiKey": "HuggingFaceKEY",
     "Model": "Kwaipilot/KAT-Dev"
   },
   "AllowedHosts": "*"
 }
+
 
 ```
 
 #### 2️⃣ Create carpeta Properties en Api_Orbis_Project y dentro de la carpeta un archivo`launchSettings.json` con esto
 
 ```json
+
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
-    "anonymousAuthentication": true,
+    "anonymousAuthentication": false,
     "iisExpress": {
       "applicationUrl": "http://localhost:46202",
       "sslPort": 44384
@@ -84,7 +87,7 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5089",
+      "applicationUrl": "http://localhost:5089;http://0.0.0.0:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -94,7 +97,7 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7273;http://localhost:5089",
+      "applicationUrl": "https://localhost:7273;http://localhost:5089;http://0.0.0.0:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -120,7 +123,11 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
 dotnet restore
 ```
 
-### 2️⃣ Create the database
+### 2️⃣ Build the project
+sh
+dotnet build
+
+### 3️⃣ Create the database
 
 ### To start migrations
 
@@ -128,13 +135,13 @@ dotnet restore
 dotnet ef migrations add Init
 ```
 
-### To update the database
+### 4️⃣ To update the database
 
 ```sh
 dotnet ef database update
 ```
 
-### 3️⃣ Run the API
+### 5️⃣ Run the API
 
 ```sh
 dotnet run
