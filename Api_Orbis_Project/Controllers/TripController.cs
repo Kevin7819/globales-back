@@ -131,31 +131,45 @@ namespace Api_Orbis_Project.Controllers
         [HttpPost("claim")]
         public async Task<IActionResult> ClaimTripByReservationCode([FromBody] string reservationCode)
         {
-            var userId = GetUserIdFromToken();
-
-            if (string.IsNullOrWhiteSpace(reservationCode))
-                return BadRequest(new { message = "Reservation code is required." });
-
-            // Buscar el viaje con ese código
-            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.ReservationCode == reservationCode);
-
-            if (trip == null)
-                return NotFound(new { message = "Reservation code not found." });
-
-            if (trip.IsUsed)
-                return BadRequest(new { message = "This reservation code has already been used." });
-
-            // Asociar viaje al usuario
-            trip.UserId = userId;
-            trip.IsUsed = true;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
+            try
             {
-                message = "Trip successfully claimed.",
-                trip = trip.ToDto()
-            });
+                var userId = GetUserIdFromToken();
+
+                if (string.IsNullOrWhiteSpace(reservationCode))
+                    return BadRequest(new { message = "Reservation code is required." });
+
+                // Normalization of reservation code
+                reservationCode = reservationCode.Trim().ToLower();
+
+                // search for trip with the given reservation code
+                var trip = await _context.Trips
+                    .FirstOrDefaultAsync(t => 
+                        t.ReservationCode.Trim().ToLower() == reservationCode);
+
+                if (trip == null)
+                    return NotFound(new { message = "Reservation code not found." });
+
+                if (trip.IsUsed)
+                    return BadRequest(new { message = "This reservation code has already been used." });
+
+                // Assign trip to user
+                trip.UserId = userId;
+                trip.IsUsed = true;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Trip successfully claimed.",
+                    trip = trip.ToDto()
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error claiming trip: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while claiming the trip." });
+            }
         }
 
     }
