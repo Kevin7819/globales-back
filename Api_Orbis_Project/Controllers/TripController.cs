@@ -30,7 +30,7 @@ namespace Api_Orbis_Project.Controllers
         {
             return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         }
-
+        /*
         [HttpPost("Create")]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripRequestDto dto)
         {
@@ -48,7 +48,7 @@ namespace Api_Orbis_Project.Controllers
 
             return Ok(trip.ToDto());
         }
-
+        */
         [HttpGet("nearest")]
         public async Task<IActionResult> GetNearestTrip()
         {
@@ -97,7 +97,7 @@ namespace Api_Orbis_Project.Controllers
 
             return Ok(trip.ToDto());
         }
-
+        /*
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTrip(int id, [FromBody] UpdateTripRequestDto dto)
         {
@@ -112,7 +112,7 @@ namespace Api_Orbis_Project.Controllers
 
             return Ok(trip.ToDto());
         }
-
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrip(int id)
         {
@@ -126,6 +126,51 @@ namespace Api_Orbis_Project.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }*/
+
+        [HttpPost("claim")]
+        public async Task<IActionResult> ClaimTripByReservationCode([FromBody] string reservationCode)
+        {
+            try
+            {
+                var userId = GetUserIdFromToken();
+
+                if (string.IsNullOrWhiteSpace(reservationCode))
+                    return BadRequest(new { message = "Reservation code is required." });
+
+                // Normalization of reservation code
+                reservationCode = reservationCode.Trim().ToLower();
+
+                // search for trip with the given reservation code
+                var trip = await _context.Trips
+                    .FirstOrDefaultAsync(t => 
+                        t.ReservationCode.Trim().ToLower() == reservationCode);
+
+                if (trip == null)
+                    return NotFound(new { message = "Reservation code not found." });
+
+                if (trip.IsUsed)
+                    return BadRequest(new { message = "This reservation code has already been used." });
+
+                // Assign trip to user
+                trip.UserId = userId;
+                trip.IsUsed = true;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Trip successfully claimed.",
+                    trip = trip.ToDto()
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error claiming trip: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while claiming the trip." });
+            }
         }
+
     }
 }

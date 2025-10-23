@@ -10,9 +10,8 @@ namespace Api_Orbis_Project.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TripId { get; set; }
 
-        [Required]
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public User? User { get; set; }
 
         [Required]
@@ -35,6 +34,8 @@ namespace Api_Orbis_Project.Models
         public string CountryCode { get; set; } = string.Empty;
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
+        public string ReservationCode { get; set; } = string.Empty;
+        public bool IsUsed { get; set; } = false;
     }
 
 }

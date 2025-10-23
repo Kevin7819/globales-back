@@ -1,27 +1,47 @@
-# Orbis
+# 🌍 Orbis - Travel Management API
 
+**Orbis** is the backend API for the **Travel Management System**, built with **ASP.NET Core 8** and **Entity Framework Core**.  
+It provides secure endpoints for **authentication, trip management, user roles,** and **AI-assisted travel recommendations** through **HuggingFace API**.
 
+---
 
-## Installation and Configuration
+## 🧠 Tech Stack
 
-### Requirements
+| Layer | Technologies |
+| :---- | :------------ |
+| **Backend Framework** | ASP.NET Core 8 |
+| **Database ORM** | Entity Framework Core |
+| **Database** | SQL Server |
+| **Auth & Security** | JWT · ASP.NET Identity · Role-based Access |
+| **AI Integration** | HuggingFace API |
+| **Development Tools** | Visual Studio · Visual Studio Code · EF CLI |
+
+---
+
+## ⚙️ Installation and Configuration
+
+### 🧩 Requirements
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download) or higher  
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)  
-- Visual Studio Code or Visual Studio  
+- [Visual Studio Code](https://code.visualstudio.com/) or Visual Studio  
 
-### Clone the repository
+---
+
+### 1️⃣ Clone the repository
 
 ```sh
-git clone 
-cd 
+git clone https://github.com/Kevin7819/orbis-backend.git
+cd orbis-backend
 ```
 
-### Configure the database
+---
 
-#### 1️⃣ Create `appsettings.Development.json`
+### 2️⃣ Configure the database
 
-Create a file `appsettings.Development.json` inside `api` with the following content:
+#### 🧾 Create `appsettings.Development.json`
+
+Inside the root folder (or `Api_Orbis_Project/`), create:
 
 ```json
 {
@@ -34,14 +54,16 @@ Create a file `appsettings.Development.json` inside `api` with the following con
 }
 ```
 
-#### 2️⃣ Create `appsettings.json` and configure SQL Server credentials
+---
 
-Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your credentials:
+#### 🧾 Create `appsettings.json`
+
+Create a file named **`appsettings.json`** and configure your SQL Server connection:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server="TUSERVIDOR"\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=YOUR_SERVER\\SQLEXPRESS;Database=OrbisDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
 
   "Logging": {
@@ -50,29 +72,37 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
       "Microsoft.AspNetCore": "Warning"
     }
   },
+
   "Jwt": {
-    "Key": "378bb149-828a-42ea-88cf-5453a3e672b4",
+    "Key": "YOUR_SECRET_JWT_KEY",
     "Issuer": "OrbisAPI",
     "Audience": "OrbisUsers",
     "ExpireMinutes": 60
   },
+
   "HuggingFace": {
-    "ApiKey": "api-key",  
+    "ApiKey": "YOUR_HUGGINGFACE_API_KEY",
     "Model": "Kwaipilot/KAT-Dev"
   },
+
   "AllowedHosts": "*"
 }
-
 ```
 
-#### 2️⃣ Create carpeta Properties en Api_Orbis_Project y dentro de la carpeta un archivo`launchSettings.json` con esto
+📝 **Note:** Replace `YOUR_SERVER`, `YOUR_SECRET_JWT_KEY`, and `YOUR_HUGGINGFACE_API_KEY` with your own values.
+
+---
+
+#### 🧾 Create `Properties/launchSettings.json`
+
+Inside **`Api_Orbis_Project/Properties/`**, create:
 
 ```json
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
-    "anonymousAuthentication": true,
+    "anonymousAuthentication": false,
     "iisExpress": {
       "applicationUrl": "http://localhost:46202",
       "sslPort": 44384
@@ -84,7 +114,7 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5089",
+      "applicationUrl": "http://localhost:5089;http://0.0.0.0:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -94,7 +124,7 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7273;http://localhost:5089",
+      "applicationUrl": "https://localhost:7273;http://localhost:5089;http://0.0.0.0:5089",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -109,33 +139,75 @@ Inside `Api_Orbis_Project`, create a file named `appsettings.json` and add your 
     }
   }
 }
-
 ```
 
-## How to run the API
+---
 
-### 1️⃣ Install dependencies
+## ▶️ Run the Backend API
+
+Open a terminal in the project folder (`Api_Orbis_Project`) and run the following commands:
+
+### 1️⃣ Restore dependencies
 
 ```sh
 dotnet restore
 ```
 
-### 2️⃣ Create the database
+### 2️⃣ Build the project
 
-### To start migrations
+```sh
+dotnet build
+```
+
+### 3️⃣ Create the initial migration
 
 ```sh
 dotnet ef migrations add Init
 ```
 
-### To update the database
+### 4️⃣ Apply migrations and create the database
 
 ```sh
 dotnet ef database update
 ```
 
-### 3️⃣ Run the API
+### 5️⃣ Run the API
 
 ```sh
 dotnet run
 ```
+
+Once running, the API will be available at:  
+**➡️ [https://localhost:7273/swagger](https://localhost:7273/swagger)**
+
+---
+
+## 🧰 Troubleshooting
+
+| Issue | Cause | Solution |
+| :---- | :---- | :-------- |
+| `dotnet ef` not recognized | EF tools not installed | Run `dotnet tool install --global dotnet-ef` |
+| Database connection error | Incorrect SQL credentials | Verify your connection string in `appsettings.json` |
+| JWT validation failed | Expired or invalid token | Ensure correct signing key and token lifetime |
+| Swagger not opening | Incorrect launch profile | Check `launchSettings.json` URLs |
+
+---
+
+## 📚 Useful Resources
+
+* [ASP.NET Core 8 Documentation](https://learn.microsoft.com/en-us/aspnet/core)
+* [Entity Framework Core Docs](https://learn.microsoft.com/en-us/ef/core/)
+* [SQL Server Downloads](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+* [HuggingFace API Docs](https://huggingface.co/docs)
+* [JWT Authentication in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/jwt)
+
+---
+
+## 👨‍💻 Author
+
+**Kevin Abel Venegas Bermúdez**  
+🎓 *Computer Engineering Student – Universidad Nacional de Costa Rica*  
+📍 Heredia, Sarapiquí, Costa Rica  
+🔗 [GitHub Profile](https://github.com/Kevin7819)
+
+---
