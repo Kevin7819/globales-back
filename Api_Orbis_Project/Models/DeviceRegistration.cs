@@ -5,19 +5,22 @@ namespace Api_Orbis_Project.Models
 {
     public class DeviceRegistration
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; } = default!;
+        public string UserId { get; set; }
 
         [Required]
-        public string ExpoPushToken { get; set; } = default!;
+        public string ExpoPushToken { get; set; }
 
-        [Required]
-        public string Platform { get; set; } = "android";
+        [MaxLength(20)]
+        public string? Platform { get; set; }
+
+        public bool IsActive { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
-        public bool IsActive { get; set; } = true;
+
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
