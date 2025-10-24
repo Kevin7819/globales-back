@@ -9,7 +9,7 @@ namespace Api_Orbis_Project.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
+        public DbSet<DeviceRegistration> DeviceRegistrations { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Preference> Preferences { get; set; }

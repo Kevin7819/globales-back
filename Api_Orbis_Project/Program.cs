@@ -52,6 +52,7 @@ builder.Services.AddAuthorization();
 // Custom services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<api.Custome.Utils>();
+builder.Services.AddHttpClient<IExpoPushService, ExpoPushService>();
 
 // -------------------------------------------
 // CORS configuration for frontend
@@ -161,8 +162,18 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"IHuggingFaceService registrado: {huggingService != null}");
         Console.WriteLine($"ITravelGuideService registrado: {travelGuideService != null}");
         
-        var controller = serviceProvider.GetService<Api_Orbis_Project.Controllers.AiController>();
-        Console.WriteLine($"AiController puede resolverse: {controller != null}");
+        try
+{
+    var controller = serviceProvider.GetRequiredService<Api_Orbis_Project.Controllers.AiController>();
+    Console.WriteLine("✅ AiController se resolvió correctamente");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("❌ Error creando AiController:");
+    Console.WriteLine(ex.Message);
+    Console.WriteLine(ex.StackTrace);
+}
+
     }
     catch (Exception ex)
     {
