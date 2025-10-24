@@ -16,6 +16,10 @@ namespace Api_Orbis_Project.Models
 
         [Required]
         [MaxLength(255)]
+        public string Origin { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(255)]
         public string Destination { get; set; } = string.Empty;
 
         [Required]
