@@ -178,7 +178,7 @@ dotnet run
 ```
 
 Once running, the API will be available at:  
-**➡️ [https://localhost:7273/swagger](https://localhost:7273/swagger)**
+**➡️ [https://localhost:5089/swagger](https://localhost:5089/swagger)**
 
 ---
 

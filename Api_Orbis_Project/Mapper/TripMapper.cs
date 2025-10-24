@@ -12,11 +12,13 @@ namespace Api_Orbis_Project.Mappers
             {
                 TripId = trip.TripId,
                 UserId = trip.UserId ?? 0, 
+                Origin = trip.Origin,
                 Destination = trip.Destination,
                 DepartureDate = trip.DepartureDate,
                 ReturnDate = trip.ReturnDate,
                 FlightNumber = trip.FlightNumber,
-                Type = trip.Type.ToString()
+                Type = trip.Type.ToString(),
+                ReservationCode = trip.ReservationCode
             };
         }
 
@@ -25,6 +27,7 @@ namespace Api_Orbis_Project.Mappers
             return new Trip
             {
                 UserId = userId,               
+                Origin = dto.Origin,
                 Destination = dto.Destination,
                 DepartureDate = dto.DepartureDate,
                 ReturnDate = dto.ReturnDate,
